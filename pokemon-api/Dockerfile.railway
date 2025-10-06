@@ -1,0 +1,17 @@
+# Railway-optimized Docker setup
+FROM openjdk:17-jdk-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy all project files  
+COPY . .
+
+# Make gradlew executable
+RUN chmod +x ./gradlew
+
+# Expose port (Railway will set PORT env var)
+EXPOSE ${PORT:-8080}
+
+# Use Railway's PORT environment variable
+CMD ["sh", "-c", "./gradlew run --no-daemon"]
