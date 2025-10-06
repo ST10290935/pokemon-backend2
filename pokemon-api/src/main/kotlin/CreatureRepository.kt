@@ -1,14 +1,43 @@
 package com.example
 
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.transactions.transaction
+
 object CreatureRepository {
-    private val creatures = mutableListOf<Creature>()
-    private var nextId = 1
+    
+    fun getAll(): List<Creature> = transaction {
+        Creatures.selectAll().map { row ->
+            Creature(
+                id = row[Creatures.id],
+                name = row[Creatures.name],
+                sprite = row[Creatures.sprite]
+            )
+        }
+    }
 
-    fun getAll(): List<Creature> = creatures.toList()
-
-    fun add(creature: Creature): Creature {
-        val newCreature = creature.copy(id = nextId++)
-        creatures.add(newCreature)
-        return newCreature
+    fun add(creature: Creature): Creature = transaction {
+        val insertedId = Creatures.insert {
+            it[name] = creature.name
+            it[sprite] = creature.sprite
+        } get Creatures.id
+        
+        creature.copy(id = insertedId)
+    }
+    
+    fun findById(id: Int): Creature? = transaction {
+        Creatures.select { Creatures.id eq id }
+            .map { row ->
+                Creature(
+                    id = row[Creatures.id],
+                    name = row[Creatures.name],
+                    sprite = row[Creatures.sprite]
+                )
+            }
+            .singleOrNull()
+    }
+    
+    fun delete(id: Int): Boolean = transaction {
+        Creatures.deleteWhere { Creatures.id eq id } > 0
     }
 }

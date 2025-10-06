@@ -28,6 +28,13 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation-jvm:2.3.12")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:2.3.12")
     implementation("ch.qos.logback:logback-classic:1.4.14")
+    
+    // SQLite Database Dependencies
+    implementation("org.jetbrains.exposed:exposed-core:0.44.1")
+    implementation("org.jetbrains.exposed:exposed-dao:0.44.1")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.44.1")
+    implementation("org.xerial:sqlite-jdbc:3.44.1.0")
+    
     testImplementation("io.ktor:ktor-server-tests-jvm:2.3.12")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.25")
 }

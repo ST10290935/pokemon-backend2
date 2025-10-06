@@ -9,6 +9,9 @@ import io.ktor.server.request.*
 import io.ktor.http.*
 
 fun main(args: Array<String>) {
+    // Initialize the database
+    DatabaseFactory.init()
+    
     // Handle PORT environment variable for Render deployment
     val port = System.getenv("PORT")?.toIntOrNull() ?: 8080
     val newArgs = args.toMutableList()
