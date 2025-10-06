@@ -10,11 +10,14 @@ COPY gradle gradle
 COPY build.gradle.kts settings.gradle.kts gradle.properties ./
 COPY src src
 
+# Copy additional files that might be needed
+COPY local.properties ./
+
 # Give execute permission to gradlew
 RUN chmod +x ./gradlew
 
 # Build the project and create fat JAR
-RUN ./gradlew buildFatJar -x test
+RUN ./gradlew buildFatJar -x test --no-daemon
 
 # Use a smaller runtime image
 FROM openjdk:17-jre-slim
@@ -25,8 +28,8 @@ WORKDIR /app
 # Copy the built JAR from builder stage
 COPY --from=builder /app/build/libs/*-all.jar app.jar
 
-# Expose port
-EXPOSE 8080
+# Expose the port (Render will override with PORT env var)
+EXPOSE $PORT
 
-# Start the application
-CMD ["java", "-jar", "app.jar"]
+# Start the application with proper Java options for containers
+CMD ["java", "-server", "-XX:+UseContainerSupport", "-Dfile.encoding=UTF-8", "-jar", "app.jar"]
