@@ -9,7 +9,16 @@ import io.ktor.server.request.*
 import io.ktor.http.*
 
 fun main(args: Array<String>) {
-    io.ktor.server.netty.EngineMain.main(args)
+    // Handle PORT environment variable for Render deployment
+    val port = System.getenv("PORT")?.toIntOrNull() ?: 8080
+    val newArgs = args.toMutableList()
+    
+    // Add port argument if not already specified
+    if (!args.any { it.contains("port") }) {
+        newArgs.add("-port=$port")
+    }
+    
+    io.ktor.server.netty.EngineMain.main(newArgs.toTypedArray())
 }
 
 // This is the module referenced in application.yaml
