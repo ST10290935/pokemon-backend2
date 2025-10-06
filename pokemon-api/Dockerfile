@@ -1,19 +1,11 @@
 # Use an official OpenJDK image
 FROM openjdk:17-jdk-slim
 
-# Set working directory
+# Set working directory  
 WORKDIR /app
 
-# Copy gradle wrapper and build files first
-COPY gradlew gradlew.bat ./
-COPY gradle/ gradle/
-COPY build.gradle.kts settings.gradle.kts gradle.properties ./
-
-# Copy source code
-COPY src/ src/
-
-# Copy local.properties if it exists
-COPY local.properties* ./
+# Copy all files from the pokemon-api directory (since that's our Docker context)
+COPY . .
 
 # Give execute permission to gradlew
 RUN chmod +x ./gradlew
