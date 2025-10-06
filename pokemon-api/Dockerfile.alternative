@@ -1,0 +1,24 @@
+# Alternative Dockerfile if fat JAR approach doesn't work
+# Use an official OpenJDK image
+FROM openjdk:17-jdk-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy Gradle wrapper and project files
+COPY gradlew gradlew
+COPY gradle gradle
+COPY build.gradle.kts settings.gradle.kts gradle.properties ./
+COPY src src
+
+# Give execute permission to gradlew
+RUN chmod +x ./gradlew
+
+# Build the project
+RUN ./gradlew build -x test
+
+# Expose port
+EXPOSE $PORT
+
+# Start the application using gradle run
+CMD ["sh", "-c", "./gradlew run --args='-port=$PORT'"]
